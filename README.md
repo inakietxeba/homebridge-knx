@@ -21,9 +21,9 @@ I cannot support the knxd. Please address issues directly at the [knxd issue pag
 - Install homebridge first, from [https://homebridge.io/](https://homebridge.io/); 
 - Once you have your instance running (without any devices yet), go to the `Plugins` tab and type `knx` in the search box
 - `homebridge-knx` should be within the top five hits (yes, there are alternatives), please check the name before installing
-- Then put the configuration file *knx_config.json* into `~/.homebridge` (or another folder to your liking, but it should be reaadable and writable by user `homebridge` or group `homebridge` which is created by the homebridge installer), and adapt them to your needs (knxd address and some test devices in `knx_config.json`)
+- Then put the configuration file *knx_config.json* into `~/.homebridge` (or another folder to your liking, but it should be readable and writable by user `homebridge` or group `homebridge` which is created by the homebridge installer), and adapt them to your needs (knxd address and some test devices in `knx_config.json`)
 -  Eliminate everything (especially all group addresses) that might harm your KNX installation. Sending bus telegrams to your alarm device might wake the neighbourhood unpleasantly!
-- If you used the dfeault paths (~/.homebridge/knx_config.json) you can just restart homebridge using the GUI
+- If you used the default paths (~/.homebridge/knx_config.json) you can just restart homebridge using the GUI
 - If you didn't, or want to use child bridges for more accessories (than 149) you need to configure homebridge (using the GUI e.g.). The following sample is from my test installation
 
 ```json
