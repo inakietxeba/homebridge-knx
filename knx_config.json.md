@@ -42,6 +42,8 @@ There is a Javascript file containing all valid services and characteristics loc
 Each characteristic is an object containing **at least** a `Type` field. Types can be "On" for power, "Brightness" for dimmable lights etc.  
 Characteristics **can** have assigned group addresses in the `Set` and `Listen` arrays.
 For the group addresses it is possible to define a *data point type* `DPT` (currently valid are DPT1, DPT5, DPT5.001, DPT9). Characteristics without group addresses can only be used by a `handler`.
+
+> **Note:** Only `Set` and `Listen` are valid group address fields at the characteristic level. There is no `Read` field for characteristics. To request the current value from the KNX bus at startup, use `KNXReadRequests` at the **service** level (see [KNXReadRequests](#knxreadrequests)).
   
 For **boolean and percentage types** it is possible to *reverse* the read/write value between HomeKit and KNX (Restrictions: Only if it is a boolean or a percentage for **HomeKit**, some of the types that support only 0 and 1 are integer anyway; Service must not have a handler, see chapter below).
 
@@ -115,7 +117,11 @@ Handlers can make use of KNX group addresses that are not connected directly to 
 - Definition of `DPT` **is mandatory** as the data point type cannot be inferred from a homekit characteristic!  
 
 ## KNXReadRequests
-All addresses listed in that array are sent to the bus with a READ request telegram at the start of homebridge-knx. They are not ergularly polled. Use active status objects instead.## LocalConstants
+All group addresses listed in this array are sent to the KNX bus as READ request telegrams at the start of homebridge-knx, allowing HomeKit to sync with the current state of the physical devices. They are not regularly polled — use active status objects (with `Listen`) for ongoing updates.
+
+This is the **only** way to request initial values from the bus. There is no `Read` field at the characteristic level.
+
+## LocalConstants
 Handlers can use service-local constants in their code. This allows using the same handler for alike-but-not-equal use cases. The values from the `LocalConstants` can be used in the handler code. This allows re-using the same handler for multiple objects that differ by more than group addresses.
 
 ## UUID and subtype

@@ -1,10 +1,10 @@
 # homebridge-knx Version 0.4 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url][![Dependency status][david-dm-image]][david-dm-url]   
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url]   
 
 KNX platform shim for homebridge.
 **This cannot run stand-alone in node!**
 
-Please also visit [homebridge github homepage](https://github.com/nfarina/homebridge) first.
+Please also visit [homebridge github homepage](https://github.com/homebridge/homebridge) first.
 
 Latest to homebridge-knx changes can be found in the [CHANGELOG.md](CHANGELOG.md)
 
@@ -77,11 +77,11 @@ Float | DPT9
 
 
 # knx_config.json
-See the [complete Doc!](https://github.com/snowdd1/homebridge-knx/blob/master/knx_config.json.md).
+See the [complete Doc!](https://github.com/inakietxeba/homebridge-knx/blob/master/knx_config.json.md).
 
 
 # Add-ins
-Add-in (aka "handlers") can change the default behavior. [See the article](https://github.com/snowdd1/homebridge-knx/blob/master/handler-add-in.md)
+Add-in (aka "handlers") can change the default behavior. [See the article](https://github.com/inakietxeba/homebridge-knx/blob/master/handler-add-in.md)
 
 Happy testing!
 
@@ -89,5 +89,3 @@ Happy testing!
 [npm-url]: https://npmjs.org/package/homebridge-knx
 [downloads-image]: http://img.shields.io/npm/dm/homebridge-knx.svg
 [npm-image]: http://img.shields.io/npm/v/homebridge-knx.svg
-[david-dm-url]: https://david-dm.org/snowdd1/homebridge-knx
-[david-dm-image]: https://david-dm.org/snowdd1/homebridge-knx.svg
