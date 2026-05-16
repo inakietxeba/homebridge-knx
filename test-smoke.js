@@ -246,12 +246,65 @@ for (const f of addinFiles) {
     }
 }
 
-// Summary
-console.log('\n=== Summary ===');
-if (allLoaded && allAddins) {
-    console.log('ALL TESTS PASSED');
-    process.exit(0);
-} else {
-    console.log('SOME TESTS FAILED');
+// Test 7: Verify knxreadhash staggers read requests
+console.log('\nTest 7: Verify knxreadhash staggers read requests...');
+try {
+    const knxaccess = require('./lib/knxaccess.js');
+    var readLog = [];
+    // set up minimal globs mock
+    knxaccess.setGlobs({
+        debug: function() {},
+        info: function() {},
+        log: function() {},
+        errorlog: function() {},
+        knxconnection: 'knxjs'
+    });
+    // monkey-patch knxread to record calls with timestamps
+    var originalKnxread = knxaccess.knxread;
+    knxaccess.knxread = function(addr) {
+        readLog.push({ address: addr, time: Date.now() });
+    };
+    var testAddresses = { '1/2/3': 1, '1/2/4': 1, '1/2/5': 1, '4/5/6': 1, '7/8/9': 1 };
+    knxaccess.knxreadhash(testAddresses);
+    // knxreadhash uses setTimeout, so reads should not have fired yet (except index 0 at 0ms)
+    if (readLog.length <= 1) {
+        console.log('  PASS: Requests are staggered (not all fired synchronously)');
+    } else {
+        console.log('  FAIL: Expected <=1 immediate reads, got ' + readLog.length);
+    }
+    // wait for all to complete and verify count
+    setTimeout(function() {
+        if (readLog.length === 5) {
+            console.log('  PASS: All 5 staggered reads completed');
+        } else {
+            console.log('  FAIL: Expected 5 reads, got ' + readLog.length);
+            process.exit(1);
+        }
+        // check that they were spread over time
+        var firstTime = readLog[0].time;
+        var lastTime = readLog[readLog.length - 1].time;
+        var spread = lastTime - firstTime;
+        if (spread >= 150) { // 4 intervals of 50ms = 200ms, allow some tolerance
+            console.log('  PASS: Reads spread over ' + spread + 'ms (expected ~200ms)');
+        } else {
+            console.log('  WARN: Reads spread over only ' + spread + 'ms (expected ~200ms)');
+        }
+        // restore
+        knxaccess.knxread = originalKnxread;
+
+        // Final Summary
+        console.log('\n=== Summary ===');
+        if (allLoaded && allAddins) {
+            console.log('ALL TESTS PASSED');
+            process.exit(0);
+        } else {
+            console.log('SOME TESTS FAILED');
+            process.exit(1);
+        }
+    }, 400);
+} catch (e) {
+    console.log('  FAIL:', e.message);
+    console.log('  Stack:', e.stack);
     process.exit(1);
 }
+

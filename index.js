@@ -494,8 +494,9 @@ KNXPlatform.prototype.configure = function () {
     globs.debug('BEFORE requestServer.listen');
     if (this.config.AllowWebserver) {
         let that = this;
-        this.requestServer.listen(that.config.WebserverPort || 18081, function () {
-            console.log("Server Listening...localhost:" + that.config.WebserverPort || 18081 + "/list");
+        var webserverPort = that.config.WebserverPort || 18081;
+        this.requestServer.listen(webserverPort, function () {
+            console.log("Server Listening...localhost:" + webserverPort + "/list");
         });
     }
 
