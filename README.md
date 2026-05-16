@@ -8,7 +8,7 @@ Please also visit [homebridge github homepage](https://github.com/nfarina/homebr
 
 Latest to homebridge-knx changes can be found in the [CHANGELOG.md](CHANGELOG.md)
 
-### This can only be used with homebridge >=1.0 and Node >=10.19.0
+### This can only be used with homebridge >=1.6 (including Homebridge v2) and Node >=20.0.0
 
 ### Prerequisites
 This node module requires either 
@@ -49,12 +49,12 @@ I cannot support the knxd. Please address issues directly at the [knxd issue pag
         {
             "name": "KNX",
             "platform": "KNX",
-            "config_path": "/home/pi/homebridge/dg-knx_config.json"
+            "config_path": "/home/homebridge/dg-knx_config.json"
         },
         {
             "name": "KNX",
             "platform": "KNX",
-            "config_path": "/home/pi/homebridge/og-knx_config.json",
+            "config_path": "/home/homebridge/og-knx_config.json",
             "_bridge": {
                 "username": "0E:0B:9B:24:17:00",
                 "port": 51490

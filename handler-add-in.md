@@ -10,6 +10,24 @@ The [example](https://github.com/snowdd1/homebridge-knx/blob/plugin-2.0/lib/addi
   
 **_This is not intended to be a complete home server replacement. It is thought to be a mapping aid for homekit_**  
 
+## Handler file locations
+
+The plugin looks for handler files in two locations, in this order:
+
+1. **Built-in handlers**: `lib/addins/` inside the plugin's installation directory (shipped with the plugin).
+2. **Custom/user handlers**: `knx_addins/` inside the Homebridge storage path.
+
+The Homebridge storage path depends on your installation:
+- Default Linux (official installer): `/var/lib/homebridge/`
+- Default macOS/manual: `~/.homebridge/`
+
+So for a standard Linux installation, place your custom handler files in:
+```
+/var/lib/homebridge/knx_addins/
+```
+
+The plugin will first check the built-in directory; if the handler is not found there, it will look in the custom directory. This allows you to create your own handlers without modifying the plugin itself, and they will survive plugin updates.
+
 ## Structure
 
 Any handler needs to extend HandlerPattern:
@@ -92,11 +110,11 @@ Get a characteristics property. Used for getting the minValue or maxValue or ste
 - {string} property - The name of the property
 - returns either a value, or an array, depending on *property*  
 **Known homekit properties:**  
-* format: one of [Characteristic.Formats](https://github.com/KhaosT/HAP-NodeJS/blob/master/lib/Characteristic.js#L62),
-*  unit: one of [Characteristic.Units](https://github.com/KhaosT/HAP-NodeJS/blob/master/lib/Characteristic.js#L78),
+* format: one of [Formats](https://github.com/homebridge/HAP-NodeJS/blob/latest/src/lib/Characteristic.ts) (e.g. `"bool"`, `"int"`, `"float"`, `"uint8"`),
+*  unit: one of Units (e.g. `"celsius"`, `"percentage"`, `"arcdegrees"`),
 *  minValue: minimum value for numeric characteristics,
 *  maxValue: maximum value for numeric characteristics,
 *  minStep: smallest allowed increment for numeric characteristics,
-*  perms: array of \[Characteristic.Perms\] like [Characteristic.Perms.READ, Characteristic.Perms.WRITE](https://github.com/KhaosT/HAP-NodeJS/blob/master/lib/Characteristic.js#L88)
+*  perms: array of Perms like `["pr", "pw"]` (PAIRED_READ, PAIRED_WRITE)
 
 

@@ -1,7 +1,8 @@
 {
-    "knxconnection": "knxd",
-    "knxd_ip": "192.168.178.212",
+    "knxd_ip": "127.0.0.1",
     "knxd_port": 6720,
+    "AllowKillHomebridge": true,
+    "AllowWebserver": true,
     "Devices": [
         {
             "DeviceName": "Arbeitszimmerlampe",

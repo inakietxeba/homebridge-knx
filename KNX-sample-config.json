@@ -9,7 +9,8 @@
 	"platforms": [
 		{
 			"name": "KNX",
-			"platform": "KNX"
+			"platform": "KNX",
+			"config_path": "/home/homebridge/knx_config.json"
 		}
 	],
 	"accessories": []

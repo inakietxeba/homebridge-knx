@@ -27,6 +27,7 @@ build/Release
 node_modules
 config.json
 notes.txt
+package-lock.json
 # local files
 
 

@@ -126,6 +126,11 @@ function registry(homebridgeAPI) {
     globs.Service = Service;
     globs.Characteristic = Characteristic;
     globs.API = homebridgeAPI;
+    globs.hap = homebridgeAPI.hap;
+    // Formats, Perms and Units are no longer static properties of Characteristic in HAP-NodeJS v1+
+    globs.Formats = homebridgeAPI.hap.Formats;
+    globs.Perms = homebridgeAPI.hap.Perms;
+    globs.Units = homebridgeAPI.hap.Units;
 
     /* load our custom types
      *
@@ -158,10 +163,10 @@ module.exports = registry;
 KNXPlatform.prototype.configureAccessory = function (accessory) {
     console.log("Plugin - Configure Accessory: " + accessory.displayName + " --> Added to restoredAccessories[]");
 
-    // set the accessory to reachable if plugin can currently process the accessory
-    // otherwise set to false and update the reachability later by invoking
-    // accessory.updateReachability()
-    accessory.updateReachability(false);
+    // updateReachability() was removed in Homebridge v2 / HAP-NodeJS v1+
+    if (typeof accessory.updateReachability === 'function') {
+        accessory.updateReachability(false);
+    }
 
     // collect the accessories
     globs.restoredAccessories.push(accessory);

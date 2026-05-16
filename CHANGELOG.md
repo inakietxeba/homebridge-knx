@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.4
+- **Homebridge v2 / HAP-NodeJS v1+ / v2+ compatibility**
+  - Rewritten custom characteristic `KNXThermAtHome` in `lib/customtypes/knxthermostat.js` using ES6 class syntax (`class extends Characteristic` + `super(...)`) instead of the legacy `Characteristic.call()` + `util.inherits()` pattern, which throws `TypeError: Class constructor Characteristic cannot be invoked without 'new'` on HAP-NodeJS v1+.
+  - Replaced deprecated `getServiceByUUIDAndSubType()` with `getServiceById()` (with fallback) in `lib/service-knx.js`.
+  - Guarded removed `updateReachability()` calls in `index.js` and `lib/knxdevice.js` with `typeof` checks.
+  - Migrated deprecated `characteristic.on('set', (value, callback, context) => {...})` to `characteristic.onSet((value) => {...})` in `lib/characteristic-knx.js`. The `context === 'fromKNXBus'` guard is no longer needed as `onSet` is only invoked by HomeKit, never by `updateValue()`.
+  - Removed callback/context params from `homekitEventCatcher` in `lib/customServiceAPI.js` accordingly.
+  - Cleaned up `characteristic.updateValue(val, undefined, 'fromKNXBus')` → `characteristic.updateValue(val)` in `lib/knxaccess.js`.
+  - Migrated `Characteristic.Formats/Perms/Units` to `api.hap.Formats/Perms/Units` in `index.js`, `lib/characteristic-knx.js`, `lib/knxaccess.js`, `lib/groupaddress.js` (removed as static properties in HAP-NodeJS v1+).
+  - Fixed `Perms.READ/WRITE` → `Perms.PAIRED_READ/PAIRED_WRITE` in `lib/characteristic-knx.js` (legacy names removed in HAP-NodeJS v1+, caused handlers not to register).
+  - Fixed `identify` event handler in `lib/knxdevice.js` — removed `callback` parameter (no longer passed in HAP-NodeJS v1+).
+  - Fixed typo `this.glob.errorlog` → `this.globs.errorlog` in `lib/knxdevice.js`.
+  - Replaced deprecated `characteristic.getValue()` with `.value` property in `lib/customServiceAPI.js`.
+  - Updated `engines.homebridge` to `^1.6.0 || ^2.0.0`, `engines.node` to `^20.0.0 || ^22.0.0 || ^24.0.0`.
+- All changes are backward-compatible with Homebridge 1.6+. No KNX logic, UUIDs, or configuration fields were changed.
+
 ## 0.4.3
 - merged PR #198 (Update WindowCoveringTilt.js) by @EyeOfTheStorm 
 - merged PR #204 (Update GarageDoorOpenerAdvanced.js) by @christof-fersch 
