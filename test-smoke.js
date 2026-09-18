@@ -104,6 +104,7 @@ const uuid = {
 function MockPlatformAccessory(name, uuid, category) {
     this.displayName = name;
     this.UUID = uuid;
+    this.category = category;
     this.context = {};
     this.existing = false;
     this.services = [];
@@ -259,8 +260,48 @@ for (const f of addinFiles) {
     }
 }
 
-// Test 7: Verify knxreadhash staggers read requests
-console.log('\nTest 7: Verify knxreadhash staggers read requests...');
+// Test 7: HKCategory compatibility with Homebridge 1.x and 2.x
+console.log('\nTest 7: Resolve HKCategory on Homebridge 1.x and 2.x...');
+try {
+    const KNXDevice = require('./lib/knxdevice.js');
+
+    function makeCategoryTestGlobs(hap) {
+        return {
+            API: {
+                hap: hap,
+                platformAccessory: MockPlatformAccessory,
+                registerPlatformAccessories: function() {}
+            },
+            Service: ServiceMock,
+            Characteristic: CharacteristicMock,
+            debug: function() {},
+            info: function() {},
+            log: function() {},
+            errorlog: function() {}
+        };
+    }
+
+    var hb2Device = new KNXDevice(
+        makeCategoryTestGlobs({ Categories: { SENSOR: 10 }, uuid: uuid }),
+        { DeviceName: 'HB2 category test', UUID: 'hb2-category-test', HKCategory: 'SENSOR', Services: [] }
+    );
+    assert(hb2Device.getPlatformAccessory().category === 10,
+        'Homebridge 2.x uses hap.Categories',
+        'Homebridge 2.x category was not resolved from hap.Categories');
+
+    var hb1Device = new KNXDevice(
+        makeCategoryTestGlobs({ Accessory: { Categories: { SENSOR: 10 } }, uuid: uuid }),
+        { DeviceName: 'HB1 category test', UUID: 'hb1-category-test', HKCategory: 'SENSOR', Services: [] }
+    );
+    assert(hb1Device.getPlatformAccessory().category === 10,
+        'Homebridge 1.x falls back to hap.Accessory.Categories',
+        'Homebridge 1.x category fallback did not resolve');
+} catch (e) {
+    fail('HKCategory compatibility test threw: ' + e.message);
+}
+
+// Test 8: Verify knxreadhash staggers read requests
+console.log('\nTest 8: Verify knxreadhash staggers read requests...');
 try {
     const knxaccess = require('./lib/knxaccess.js');
     var readLog = [];
@@ -302,9 +343,9 @@ try {
         knxaccess.knxread = originalKnxread;
 
         // =============================================
-        // Test 8: writeValueHK — FLOAT deduplication
+        // Test 9: writeValueHK — FLOAT deduplication
         // =============================================
-        console.log('\nTest 8: writeValueHK — FLOAT deduplication (epsilon comparison)...');
+        console.log('\nTest 9: writeValueHK — FLOAT deduplication (epsilon comparison)...');
 
         // Mock a CharacteristicKNX that wraps a MockCharacteristic
         function makeChrKNX(name, props) {
@@ -345,9 +386,9 @@ try {
             'Expected 21.5, got ' + tempChr._hkChar.value);
 
         // =============================================
-        // Test 9: writeValueHK — BOOL handling
+        // Test 10: writeValueHK — BOOL handling
         // =============================================
-        console.log('\nTest 9: writeValueHK — BOOL handling...');
+        console.log('\nTest 10: writeValueHK — BOOL handling...');
 
         var boolChr = makeChrKNX('On', {
             format: 'bool', perms: ['pr', 'pw', 'ev']
@@ -373,9 +414,9 @@ try {
             'Expected 0, got ' + boolRevChr._hkChar.value);
 
         // =============================================
-        // Test 10: writeValueHK — INT/UINT8 handling
+        // Test 11: writeValueHK — INT/UINT8 handling
         // =============================================
-        console.log('\nTest 10: writeValueHK — INT/UINT8 handling...');
+        console.log('\nTest 11: writeValueHK — INT/UINT8 handling...');
 
         var intChr = makeChrKNX('CurrentHeatingCoolingState', {
             format: 'uint8', perms: ['pr', 'ev']
@@ -398,9 +439,9 @@ try {
             'Expected 2, got ' + intChr._hkChar.value);
 
         // =============================================
-        // Test 11: writeValueHK — FLOAT out of range
+        // Test 12: writeValueHK — FLOAT out of range
         // =============================================
-        console.log('\nTest 11: writeValueHK — FLOAT out of range...');
+        console.log('\nTest 12: writeValueHK — FLOAT out of range...');
 
         var tempChr2 = makeChrKNX('CurrentTemperature', {
             format: 'float', minStep: 0.1, minValue: 0, maxValue: 100,
@@ -419,9 +460,9 @@ try {
             'Expected ' + prevVal + ', got ' + tempChr2._hkChar.value);
 
         // =============================================
-        // Test 12: writeValueHK — FLOAT with minStep quantization
+        // Test 13: writeValueHK — FLOAT with minStep quantization
         // =============================================
-        console.log('\nTest 12: writeValueHK — FLOAT minStep quantization...');
+        console.log('\nTest 13: writeValueHK — FLOAT minStep quantization...');
 
         var quantChr = makeChrKNX('TargetTemperature', {
             format: 'float', minStep: 0.5, minValue: 10, maxValue: 38,
@@ -439,9 +480,9 @@ try {
             'Expected 21, got ' + quantChr._hkChar.value);
 
         // =============================================
-        // Test 13: writeValueHK — INT percentage DPT5 conversion (knxjs)
+        // Test 14: writeValueHK — INT percentage DPT5 conversion (knxjs)
         // =============================================
-        console.log('\nTest 13: writeValueHK — percentage DPT5 conversion...');
+        console.log('\nTest 14: writeValueHK — percentage DPT5 conversion...');
 
         var pctChr = makeChrKNX('Brightness', {
             format: 'uint8', minValue: 0, maxValue: 100,
@@ -468,9 +509,9 @@ try {
             'Expected 75, got ' + pctChr._hkChar.value);
 
         // =============================================
-        // Test 14: validateAddressText
+        // Test 15: validateAddressText
         // =============================================
-        console.log('\nTest 14: validateAddressText...');
+        console.log('\nTest 15: validateAddressText...');
 
         assert(knxaccess.validateAddressText('1/2/3') === 'OK',
             'Valid address 1/2/3');
