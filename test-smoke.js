@@ -328,6 +328,7 @@ try {
         'Expected <=1 immediate reads, got ' + readLog.length);
 
     // wait for staggered reads to complete, then run remaining tests
+    // knxreadhash currently uses a 500ms interval, so 5 addresses need just over 2s.
     setTimeout(function() {
         assert(readLog.length === 5,
             'All 5 staggered reads completed',
@@ -335,10 +336,10 @@ try {
         var firstTime = readLog[0].time;
         var lastTime = readLog[readLog.length - 1].time;
         var spread = lastTime - firstTime;
-        if (spread >= 150) {
-            pass('Reads spread over ' + spread + 'ms (expected ~200ms)');
+        if (spread >= 1900) {
+            pass('Reads spread over ' + spread + 'ms (expected ~2000ms)');
         } else {
-            warn('Reads spread over only ' + spread + 'ms (expected ~200ms)');
+            warn('Reads spread over only ' + spread + 'ms (expected ~2000ms)');
         }
         knxaccess.knxread = originalKnxread;
 
@@ -538,10 +539,9 @@ try {
             console.log('SOME TESTS FAILED');
             process.exit(1);
         }
-    }, 400);
+    }, 2300);
 } catch (e) {
     console.log('  FAIL:', e.message);
     console.log('  Stack:', e.stack);
     process.exit(1);
 }
-
