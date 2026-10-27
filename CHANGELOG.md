@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.5 - 2026-10-27
+- Fixed `HKCategory` resolution for new accessories on Homebridge 2.x, retaining the Homebridge 1.x fallback.
+- Removed the invalid `Formats.PERCENTAGE` branch in DPT inference; percentage characteristics continue to use `Units.PERCENTAGE`.
+- Added tests against the real `@homebridge/hap-nodejs` library for plugin registration, the custom thermostat characteristic, DPT inference, and accessory categories.
+- Added a conservative ESLint configuration (`npm run lint`).
+- `npm test` now runs both the existing KNX smoke tests and the real HAP tests, with read-request timing aligned to the 500 ms interval.
+
 ## 0.4.4
 - **Homebridge v2 / HAP-NodeJS v1+ / v2+ compatibility**
   - Rewritten custom characteristic `KNXThermAtHome` in `lib/customtypes/knxthermostat.js` using ES6 class syntax (`class extends Characteristic` + `super(...)`) instead of the legacy `Characteristic.call()` + `util.inherits()` pattern, which throws `TypeError: Class constructor Characteristic cannot be invoked without 'new'` on HAP-NodeJS v1+.
