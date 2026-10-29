@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1 - 2026-10-30
+- Fork release numbered above upstream 0.6.0; retains this fork's existing Homebridge compatibility fixes and KNX improvements.
+- Override KNX's vulnerable `binary-parser` 1.1.5 dependency with patched version 2.3.0 (CVE-2026-1245).
+- Bundle the KNX dependency with the patched parser so installations from GitHub retain the fix; npm ignores dependency-level overrides when the plugin is installed inside another project.
+- Add offline regression tests for KNX address decoding and KNX/IP routing telegram round trips with the patched parser.
+
 ## 0.4.5 - 2026-10-27
 - Fixed `HKCategory` resolution for new accessories on Homebridge 2.x, retaining the Homebridge 1.x fallback.
 - Removed the invalid `Formats.PERCENTAGE` branch in DPT inference; percentage characteristics continue to use `Units.PERCENTAGE`.

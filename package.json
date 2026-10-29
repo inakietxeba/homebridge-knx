@@ -1,11 +1,12 @@
 {
     "name": "homebridge-knx",
-    "version": "0.4.5",
+    "version": "0.6.1",
     "description": "homebridge shim for KNX home automation.",
     "main": "index.js",
     "scripts": {
         "test": "node test-smoke.js && node --test test/*.test.js",
         "lint": "eslint .",
+        "prepare": "node scripts/verify-knx-parser.js",
         "start": "echo \"Error: configure and run homebridge to start\" && exit 1"
     },
     "engines": {
@@ -31,6 +32,14 @@
         "eibd": "^0.5.1",
         "knx": "^2.5.2"
     },
+    "overrides": {
+        "knx": {
+            "binary-parser": "2.3.0"
+        }
+    },
+    "bundleDependencies": [
+        "knx"
+    ],
     "author": {
         "name": "Raoul",
         "email": "snowdd1.theelk@xoxy.net",
